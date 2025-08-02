@@ -4,20 +4,32 @@ import { revalidatePath } from "next/cache";
 
 export async function aumentar() {
   "use server";
-  await prisma.counter.update({
-    where: { id: 1 },
-    data: { value: { increment: 1 }, lastUpdatedAt: new Date() }
-  });
-  revalidatePath("/");
+  try{
+
+    await prisma.counter.update({
+      where: { id: 1 },
+      data: { value: { increment: 1 }, lastUpdatedAt: new Date() }
+    });
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Error al aumentar el contador:", error);
+    throw new Error("No se pudo aumentar el contador");
+  }
 }
 
 export async function decrementar() {
   "use server";
-  await prisma.counter.update({
-    where: { id: 1 },
-    data: { value: { decrement: 1 }, lastUpdatedAt: new Date() }
-  });
-  revalidatePath("/");
+  try{
+    await prisma.counter.update({
+      where: { id: 1 },
+      data: { value: { decrement: 1 }, lastUpdatedAt: new Date() }
+    });
+    revalidatePath("/");
+  }
+  catch (error) {
+    console.error("Error al disminuir el contador:", error);
+    throw new Error("No se pudo disminuir el contador");
+  }
 }
 
 const setContador = async () => {
@@ -25,7 +37,6 @@ const setContador = async () => {
     where: { id: 1 }
   });
 
-  // Si no existe, lo crea
   if (!contador) {
     contador = await prisma.counter.create({
       data: { id: 1, value: 0 }
@@ -33,12 +44,11 @@ const setContador = async () => {
     return contador;
   }
   
-  // Reset automático si pasaron más de 20 minutos
   const now = new Date();
   const lastUpdate = new Date(contador.lastUpdatedAt);
   const diffMinutes = (now - lastUpdate) / (1000 * 60);
   
-  if (diffMinutes > 1) {
+  if (diffMinutes > 20) {
     contador = await prisma.counter.update({
       where: { id: 1 },
       data: { value: 0, lastUpdatedAt: new Date() }
