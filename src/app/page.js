@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic' // Desactiva el prerendering estático
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -43,7 +44,7 @@ const setContador = async () => {
       data: { value: 0, lastUpdatedAt: new Date() }
     });
   }
-
+  
   return contador;
 };
 
