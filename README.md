@@ -60,7 +60,9 @@ npm run dev
 
 ## Decisiones técnicas
 
-    ```export const dynamic = 'force-dynamic'```
+    ```
+    export const dynamic = 'force-dynamic'
+    ```
     Para asegurar que el contador siempre refleje el valor más reciente de la base de datos.
 
     Server Actions en botones para interactuar con el contador sin necesidad de una API REST, lo que ayuda a simplificar la arquitectura al evitar rutas API separadas.
